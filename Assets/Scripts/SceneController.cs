@@ -8,11 +8,50 @@ public class SceneController : MonoBehaviour
     public const float offsetX = 2f;
     public const float offsetY = 2.5f;
 
+    private MemoryCard _firstRevealed;
+    private MemoryCard _secondRevealed;
+    private int _score = 0;
+
     [SerializeField] private MemoryCard originalCard;
     [SerializeField] private Sprite[] images;
 
+    public bool canReveal {
+        get { return _secondRevealed == null; } //возвращает falsе, если вторая карта уже открыта
+    }
+
+    public void CardRevealed(MemoryCard card)
+    {
+        if (_firstRevealed == null)
+        {
+            _firstRevealed = card;
+        } else {
+            _secondRevealed = card;
+            StartCoroutine(CheckMatch());
+        }
+    }
+
+    private IEnumerator CheckMatch()
+    {
+        if (_firstRevealed.id == _secondRevealed.id)
+        {
+            ++_score;
+            Debug.Log("Score: " + _score);
+        } else
+        {
+            yield return new WaitForSeconds(.5f);
+
+            //карты не совпали - переворачиваем.
+            _firstRevealed.Unreveal();
+            _secondRevealed.Unreveal();
+        }
+
+        _firstRevealed = null;
+        _secondRevealed = null;
+    }
+
     void Start()
     {
+        Debug.Log(images);
         Vector3 startPos = originalCard.transform.position; //Положение первой карты. Положение остальных отсчитываем от этой позиции
 
         int[] numbers = {0, 0, 1, 1, 2, 2, 3, 3}; //пары идентификаторов для всех четырех спрайтов с изображениями
