@@ -15,6 +15,10 @@ public class SceneController : MonoBehaviour
     {
         Vector3 startPos = originalCard.transform.position; //Положение первой карты. Положение остальных отсчитываем от этой позиции
 
+        int[] numbers = {0, 0, 1, 1, 2, 2, 3, 3}; //пары идентификаторов для всех четырех спрайтов с изображениями
+
+        numbers = ShuffleArray(numbers); //перемеживаем
+
         for (int i = 0; i < gridCols; i++)
         {
             for (int j = 0; j < gridRows; j++)
@@ -28,7 +32,8 @@ public class SceneController : MonoBehaviour
                     card = Instantiate(originalCard) as MemoryCard;
                 }
 
-                int id = Random.Range(0, images.Length);
+                int index = j * gridCols + i; //получаем id из перемешанного списка, а не из случайных чисел
+                int id = numbers[index];
                 card.SetCard(id, images[id]);
 
                 float posX = (offsetX * i) + startPos.x;
@@ -38,4 +43,19 @@ public class SceneController : MonoBehaviour
             }
         }
 	}
+
+    //Реализация алгоритма тасования Кнута
+    private int[] ShuffleArray(int[] numbers)
+    {
+        int[] newArray = numbers.Clone() as int[];
+        for (int i = 0; i < newArray.Length; i++)
+        {
+            int tmp = newArray[i];
+            int r = Random.Range(i, newArray.Length);
+            newArray[i] = newArray[r];
+            newArray[r] = tmp;
+        }
+
+        return newArray;
+    }
 }
