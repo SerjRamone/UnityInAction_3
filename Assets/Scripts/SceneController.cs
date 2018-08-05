@@ -14,6 +14,7 @@ public class SceneController : MonoBehaviour
 
     [SerializeField] private MemoryCard originalCard;
     [SerializeField] private Sprite[] images;
+    [SerializeField] private TextMesh scoreLabel;
 
     public bool canReveal {
         get { return _secondRevealed == null; } //возвращает falsе, если вторая карта уже открыта
@@ -35,7 +36,7 @@ public class SceneController : MonoBehaviour
         if (_firstRevealed.id == _secondRevealed.id)
         {
             ++_score;
-            Debug.Log("Score: " + _score);
+            scoreLabel.text = "Score: " + _score; 
         } else
         {
             yield return new WaitForSeconds(.5f);
